@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class PlayerController : CreatureController
-{        
+public class MonsterController : CreatureController
+{
     protected override void Init()
     {
         base.Init();
@@ -12,13 +12,7 @@ public class PlayerController : CreatureController
 
     protected override void UpdateController()
     {
-        GetDirInput();
         base.UpdateController();
-    }
-
-    private void LateUpdate()
-    {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 
     private void GetDirInput()
