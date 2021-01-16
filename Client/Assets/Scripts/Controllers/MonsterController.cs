@@ -12,33 +12,14 @@ public class MonsterController : CreatureController
         Dir = MoveDir.None;
     }
 
-    protected override void UpdateController()
+    public override void OnDamaged()
     {
-        base.UpdateController();
-    }
+        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
+        effect.transform.position = transform.position;
+        effect.GetComponent<Animator>().Play("START");
+        Destroy(effect, 0.5f);
 
-    private void GetDirInput()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            Dir = MoveDir.Up;
-        }
-
-        else if (Input.GetKey(KeyCode.S))
-        {
-            Dir = MoveDir.Down;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            Dir = MoveDir.Left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Dir = MoveDir.Right;
-        }
-        else
-        {
-            Dir = MoveDir.None;
-        }
+        Managers.Obj.Remove(gameObject);
+        Managers.Resource.Destroy(gameObject);
     }
 }
