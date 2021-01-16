@@ -43,6 +43,9 @@ public class PlayerController : CreatureController
         else
         {
             Dir = MoveDir.None;
+
+            if (Input.GetKey(KeyCode.Space))
+                State = CreatureState.Skill;
         }
     }
 }
