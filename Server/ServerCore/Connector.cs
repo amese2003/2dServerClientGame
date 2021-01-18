@@ -10,7 +10,7 @@ namespace ServerCore
     {
 
         Func<Session> _sessionFactory;
-        public void Connecct(IPEndPoint endPoint, Func<Session> sessionFactory, int count = 1)
+        public void Connect(IPEndPoint endPoint, Func<Session> sessionFactory, int count = 1)
         {
             for (int i = 0; i < count; i++)
             {
