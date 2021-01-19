@@ -5,17 +5,16 @@ using System.Text;
 using System.Threading;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Game;
 using ServerCore;
 
 namespace Server
 {
 	
-	class ClientSession : PacketSession
+	public class ClientSession : PacketSession
     {
+        public Player MyPlayer { get; set; }
         public int SessionID { get; set; }
-        public float PosX { get; set; }
-        public float PosY { get; set; }
-        public float PosZ { get; set; }
 
 
         public void Send(IMessage packet)
@@ -25,7 +24,7 @@ namespace Server
 
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)size + 4), 0, sendBuffer, 0, sizeof(ushort));
             Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 
@@ -35,15 +34,19 @@ namespace Server
         {
             Console.WriteLine($"OnConnected: {endPoint}");
 
-            S_Chat chat = new S_Chat()
-            {
-                Context = "안녕하세요"
-            };
 
-            Send(chat);
 
             // TODO
-            //Program.Room.Push(() => Program.Room.Enter(this));
+            MyPlayer = PlayerManager.Instance.Add();
+
+            {
+                MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
+                MyPlayer.Info.PosX = 0;
+                MyPlayer.Info.PosY = 0;
+                MyPlayer.Session = this;
+            }
+
+            RoomManager.Instance.Find(1).EnterGame(MyPlayer);
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -53,6 +56,8 @@ namespace Server
 
         public override void OnDisconnected(EndPoint endPoint)
         {
+            RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerId);
+
             SessionManager.Instance.Remove(this);
             Console.WriteLine($"OnDisconnected: {endPoint}");
         }
