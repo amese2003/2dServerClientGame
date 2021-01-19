@@ -17,6 +17,20 @@ namespace Server
         public float PosY { get; set; }
         public float PosZ { get; set; }
 
+
+        public void Send(IMessage packet)
+        {
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];
+            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"OnConnected: {endPoint}");
@@ -26,14 +40,7 @@ namespace Server
                 Context = "안녕하세요"
             };
 
-            ushort size = (ushort)chat.CalculateSize();
-            byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
-            ushort protocolId = (ushort)MsgId.SChat;
-            Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
-            Array.Copy(chat.ToByteArray(), 0, sendBuffer, 4, size);
-
-            Send(new ArraySegment<byte>(sendBuffer));
+            Send(chat);
 
             // TODO
             //Program.Room.Push(() => Program.Room.Enter(this));
