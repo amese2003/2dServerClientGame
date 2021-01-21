@@ -63,8 +63,6 @@ public class CreatureController : MonoBehaviour
             _updated = true;
         }
     }
-
-    protected MoveDir _lastDir = MoveDir.Down;
     public MoveDir Dir
     {
         get { return PosInfo.MoveDir; }
@@ -74,9 +72,6 @@ public class CreatureController : MonoBehaviour
                 return;
 
             PosInfo.MoveDir = value;
-            if (value != MoveDir.None)
-                _lastDir = value;
-
             UpdateAnimation();
             _updated = true;
         }
@@ -90,17 +85,15 @@ public class CreatureController : MonoBehaviour
             return MoveDir.Left;
         else if (dir.y > 0)
             return MoveDir.Up;
-        else if (dir.y < 0)
-            return MoveDir.Down;
         else
-            return MoveDir.None;
+            return MoveDir.Down;
     }
 
     public Vector3Int GetFrontCellPos()
     {
         Vector3Int cellPos = CellPos;
 
-        switch (_lastDir)
+        switch (Dir)
         {
             case MoveDir.Up:
                 cellPos += Vector3Int.up;
@@ -123,7 +116,7 @@ public class CreatureController : MonoBehaviour
     {
         if(State == CreatureState.Idle)
         {
-            switch (_lastDir)
+            switch (Dir)
             {
                 case MoveDir.Up:
                     _animator.Play("IDLE_BACK");
@@ -163,14 +156,12 @@ public class CreatureController : MonoBehaviour
                     _animator.Play("WALK_RIGHT");
                     _sprite.flipX = false;
                     break;
-                case MoveDir.None:
-                    break;
             }
         }
         else if(State == CreatureState.Skill)
         {
             // TODO
-            switch (_lastDir)
+            switch (Dir)
             {
                 case MoveDir.Up:
                     _animator.Play("ATTACK_BACK");
@@ -187,8 +178,6 @@ public class CreatureController : MonoBehaviour
                 case MoveDir.Right:
                     _animator.Play("ATTACK_RIGHT");
                     _sprite.flipX = false;
-                    break;
-                case MoveDir.None:
                     break;
             }
         }
@@ -217,7 +206,7 @@ public class CreatureController : MonoBehaviour
         transform.position = pos;
 
         State = CreatureState.Idle;
-        Dir = MoveDir.None;
+        Dir = MoveDir.Down;
         UpdateAnimation();
     }
 

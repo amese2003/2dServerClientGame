@@ -10,7 +10,7 @@ public class ArrowController : CreatureController
     {
         // TODO
 
-        switch (_lastDir)
+        switch (Dir)
         {
             case MoveDir.Up:
                 transform.rotation = Quaternion.Euler(0, 0, 0);

@@ -74,12 +74,45 @@ namespace Server.Game
             return !_collision[y, x] && ((!checkObjects) || _players[y,x] == null);
         }
 
+        public Player Find(Vector2Int cellPos)
+        {
+            if (cellPos.x < MinX || cellPos.x > MaxX)
+                return null;
+            if (cellPos.y < MinY || cellPos.y > MaxY)
+                return null;
+
+            int x = cellPos.x - MinX;
+            int y = MaxY - cellPos.y;
+            return _players[y, x];
+        }
+
         public bool ApplyMove(Player player, Vector2Int dest)
         {
             PositionInfo posInfo = player.Info.PosInfo;
+            if (posInfo.PosX < MinX || posInfo.PosX > MaxX)
+                return false;
+            if (posInfo.PosY < MinY || posInfo.PosY > MaxY)
+                return false;
 
             if (CanGo(dest, true) == false)
                 return false;
+
+            {
+                int x = posInfo.PosX - MinX;
+                int y = MaxY - posInfo.PosY;
+
+                if (_players[y,x] == player)
+                    _players[y, x] = null;
+            }
+            {
+                int x = dest.x - MinX;
+                int y = MaxY - dest.y;
+                _players[y, x] = player;
+            }
+
+            // 실제 좌표 이동
+            posInfo.PosX = dest.x;
+            posInfo.PosY = dest.y;
 
             return true;
         }
