@@ -37,13 +37,17 @@ namespace Server
             Console.WriteLine("Listening.....");
 
             //FlushRoom();
-            JobTimer.Instance.Push(FlushRoom);
+            //JobTimer.Instance.Push(FlushRoom);
 
+            // TODO
             while (true)
             {
                 //Room.Push(() => Room.Flush());
                 //Thread.Sleep(250);
-                JobTimer.Instance.Flush();
+                //JobTimer.Instance.Flush();
+                RoomManager.Instance.Find(1).Update();
+
+                Thread.Sleep(100);
             }
         }
     }

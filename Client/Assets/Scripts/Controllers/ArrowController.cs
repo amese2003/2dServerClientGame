@@ -37,49 +37,4 @@ public class ArrowController : CreatureController
         
     }
 
-
-    protected override void MoveToNextPos()
-    {
-
-        Vector3Int destPos = CellPos;
-
-        switch (Dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-        }
-
-        if (Managers.Map.CanGo(destPos))
-        {
-            GameObject go = Managers.Obj.Find(destPos);
-            if (go == null)
-            {
-                CellPos = destPos;
-            }
-            else
-            {
-                // TODO
-                CreatureController cc = go.GetComponent<CreatureController>();
-                if (cc != null)
-                    cc.OnDamaged();
-
-                Debug.Log(go.name);
-                Managers.Resource.Destroy(gameObject);
-            }
-        }
-        else
-        {
-            Managers.Resource.Destroy(gameObject);
-        }
-    }
 }
