@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -189,8 +190,6 @@ namespace Server.Game
                 if (info.PosInfo.State != CreatureState.Idle)
                     return;
 
-                // TODO : 스킬 사용 가능 여부 체크
-
                 info.PosInfo.State = CreatureState.Skill;
 
                 S_Skill skill = new S_Skill() { Info = new SkillInfo() };
@@ -198,30 +197,40 @@ namespace Server.Game
                 skill.Info.SkillId = skillPacket.Info.SkillId;
                 Broadcast(skill);
 
-                if (skillPacket.Info.SkillId == 1)
-                {
-                    Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                    GameObject target = Map.Find(skillPos);
-                    if (target != null)
-                    {
-                        Console.WriteLine("Hit GameObject.");
-                    }
-                }
-                else if (skillPacket.Info.SkillId == 2)
-                {
-                    // TODO : Arrow
-                    Arrow arrow = ObjectManager.Instance.Add<Arrow>();
+                Data.Skill skillData = null;
+                if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
+                    return;
 
-                    if (arrow == null)
-                        return;
+                switch (skillData.skillType)
+                {
+                    case SkillType.SkillAuto:
+                        {
+                            Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                            GameObject target = Map.Find(skillPos);
+                            if (target != null)
+                            {
+                                Console.WriteLine("Hit GameObject.");
+                            }
+                        }
+                        break;
+                    case SkillType.SkillProjectile:
+                        {
+                            Arrow arrow = ObjectManager.Instance.Add<Arrow>();
 
-                    arrow.Owner = player;
-                    arrow.PosInfo.State = CreatureState.Moving;
-                    arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
-                    arrow.PosInfo.PosX = player.PosInfo.PosX;
-                    arrow.PosInfo.PosY = player.PosInfo.PosY;
-                    EnterGame(arrow);
-                }                
+                            if (arrow == null)
+                                return;
+
+                            arrow.Owner = player;
+                            arrow.Data = skillData;
+
+                            arrow.PosInfo.State = CreatureState.Moving;
+                            arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
+                            arrow.PosInfo.PosX = player.PosInfo.PosX;
+                            arrow.PosInfo.PosY = player.PosInfo.PosY;
+                            EnterGame(arrow);
+                        }
+                        break;
+                }   
             }
         }
 
