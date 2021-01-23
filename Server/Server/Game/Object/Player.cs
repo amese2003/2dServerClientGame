@@ -15,9 +15,14 @@ namespace Server.Game
             Speed = 10.0f;
         }
 
-        public override void OnDammaged(GameObject attacker, int damage)
+        public override void OnDamaged(GameObject attacker, int damage)
         {
-            Console.WriteLine($"TODO : Damage {damage}");
+            base.OnDamaged(attacker, damage);
+        }
+
+        public override void OnDead(GameObject attacker)
+        {
+            base.OnDead(attacker);
         }
     }
 }
