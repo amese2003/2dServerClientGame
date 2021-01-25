@@ -25,9 +25,6 @@ class PacketHandler
 			return;
 
 		room.HandleMove(player, movePacket);
-		// TODO : 검증
-
-		
 	}
 
 	public static void C_SkillHandler(PacketSession session, IMessage packet)

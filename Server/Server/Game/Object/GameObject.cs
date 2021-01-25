@@ -143,6 +143,10 @@ namespace Server.Game
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;
 
+            Action action = () => {
+                Room.Init(1);            
+            };
+
             room.EnterGame(this);
         }
     }
