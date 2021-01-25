@@ -110,6 +110,8 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker ,int damage)
         {
+            if (Room == null)
+                return;
 
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
 
@@ -127,6 +129,9 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            if (Room == null)
+                return;
+
             S_Die diePacket = new S_Die();
 
             diePacket.ObjectId = Id;
@@ -134,7 +139,7 @@ namespace Server.Game
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
-            Room.LeaveGame(Id);
+            room.LeaveGame(Id);
 
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
@@ -142,10 +147,6 @@ namespace Server.Game
 
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;
-
-            Action action = () => {
-                Room.Init(1);            
-            };
 
             room.EnterGame(this);
         }
