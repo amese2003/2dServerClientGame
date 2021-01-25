@@ -21,6 +21,11 @@ namespace Server.Game
         public void Init(int mapId)
         {
             Map.LoadMap(mapId);
+
+            // temp
+            Monster monster = ObjectManager.Instance.Add<Monster>();
+            monster.CellPos = new Vector2Int(5, 9);
+            EnterGame(monster);
         }
 
         public void Update()
@@ -30,6 +35,11 @@ namespace Server.Game
                 foreach(Projectile projectile in _Projectiles.Values)
                 {
                     projectile.Update();
+                }
+
+                foreach (Monster monster in _monster.Values)
+                {
+                    monster.Update();
                 }
             }
         }
@@ -247,6 +257,17 @@ namespace Server.Game
                         break;
                 }   
             }
+        }
+
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            foreach(Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+
+            return null;
         }
 
         public void Broadcast(IMessage packet)
