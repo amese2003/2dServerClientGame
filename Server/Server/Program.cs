@@ -35,12 +35,6 @@ namespace Server
             ConfigManager.LoadConfig();
             DataManager.LoadData();
 
-            // DB 테스트
-            using (AppDbContext db = new AppDbContext())
-            {
-                db.Accounts.Add(new AccountDb() { AccountName = "TestAccount" });
-                db.SaveChanges();
-            }
 
             GameRoom room = RoomManager.Instance.Add(1);
             TickRoom(room, 50);
