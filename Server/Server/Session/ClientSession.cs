@@ -12,12 +12,16 @@ using ServerCore;
 namespace Server
 {
 	
-	public class ClientSession : PacketSession
+	public partial class ClientSession : PacketSession
     {
+        public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+
         public Player MyPlayer { get; set; }
         public int SessionID { get; set; }
 
+        
 
+        #region Network
         public void Send(IMessage packet)
         {
             string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
@@ -81,5 +85,6 @@ namespace Server
         {
             //Console.WriteLine($"Transferred bytes: {numOfBytes}");
         }
+        #endregion
     }
 }
