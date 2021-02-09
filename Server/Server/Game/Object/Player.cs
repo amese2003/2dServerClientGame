@@ -41,18 +41,7 @@ namespace Server.Game
             // -- 결과를 받아서 이어서 처리를 해야하는 경우가 많음
             // -- 아이템 생성
 
-            // 서빙 담당
-            // 결제 담당
-            using (AppDbContext db = new AppDbContext())
-            {
-                PlayerDb playerDb = new PlayerDb();
-                playerDb.PlayerDbId = PlayerDbId;
-                playerDb.Hp = Stat.Hp;
-
-                db.Entry(playerDb).State = EntityState.Unchanged;
-                db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
-                db.SaveChangesEx();
-            }
+            DbTransaction.SavePlayerStatus_Step1(this, Room);
         }
     }
 }
