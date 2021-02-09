@@ -10,7 +10,8 @@ namespace Server.Game
     public class Player : GameObject
     {    
         public int PlayerDbId { get; set; }
-        public ClientSession Session { get; set; }        
+        public ClientSession Session { get; set; }
+        public Inventory Inven { get; private set; } = new Inventory();
 
         public Player()
         {
