@@ -49,6 +49,7 @@ namespace Server
                     {
 						LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
 						{
+							PlayerDbId = playerDb.PlayerDbId,
 							Name = playerDb.PlayerName,
 							StatInfo = new StatInfo()
 							{
@@ -76,7 +77,9 @@ namespace Server
 				{
 					AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueId };
 					db.Accounts.Add(newAccount);
-					db.SaveChanges(); // TODO : Exception
+					bool success = db.SaveChangesEx(); // TODO : Exception
+					if (!success)
+						return;
 
 					// AccountDbId 메모리에 기억
 					AccountDbId = newAccount.AccountDbId;
@@ -124,11 +127,14 @@ namespace Server
 					};
 
 					db.Players.Add(newPlayerDb);
-					db.SaveChanges();
+					bool success = db.SaveChangesEx();
+					if (!success)
+						return;
 
 					// 메모리에 추가
 					LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
 					{
+						PlayerDbId = newPlayerDb.PlayerDbId,
 						Name = createPacket.Name,
 						StatInfo = new StatInfo()
 						{
@@ -165,13 +171,14 @@ namespace Server
 
 			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
+				MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
 				MyPlayer.Info.Name = playerInfo.Name;
 				MyPlayer.Info.PosInfo.State = CreatureState.Idle;
 				MyPlayer.Info.PosInfo.MoveDir = MoveDir.Down;
 				MyPlayer.Info.PosInfo.PosX = 0;
 				MyPlayer.Info.PosInfo.PosY = 0;
 				MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
-				MyPlayer.Session = this;
+				MyPlayer.Session = this;				
 			}
 
 			ServerState = PlayerServerState.ServerStateGame;
