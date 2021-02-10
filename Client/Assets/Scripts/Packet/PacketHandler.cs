@@ -170,10 +170,21 @@ class PacketHandler
 	public static void S_ItemListHandler(PacketSession session, IMessage packet)
     {
 		S_ItemList itemList = (S_ItemList)packet;
+		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+		UI_Inventory invenUI = gameSceneUI.InvenUI;
 
-		foreach(ItemInfo item in itemList.Items)
+		Managers.Inven.Clear();
+
+
+		// 메모리에 아이템 정보 적용
+		foreach(ItemInfo itemInfo in itemList.Items)
         {
-			Debug.Log($"{item.TemplateId} : {item.Count}");
+			Item item = Item.MakeItem(itemInfo);
+			Managers.Inven.Add(item);
         }
+
+		// UI 에서 표시
+		invenUI.gameObject.SetActive(true);
+		invenUI.RefreshUI();
     }
 }

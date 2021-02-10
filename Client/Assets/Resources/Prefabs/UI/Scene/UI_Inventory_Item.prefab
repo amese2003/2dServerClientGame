@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f36d7cc9188b5ef4595df417726c020f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _icon: {fileID: 557580305664626482}
 --- !u!1 &557580304344803974
 GameObject:
   m_ObjectHideFlags: 0
