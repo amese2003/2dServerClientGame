@@ -23,6 +23,7 @@ namespace Server.Game
 
             // temp
             Monster monster = ObjectManager.Instance.Add<Monster>();
+            monster.Init(1);
             monster.CellPos = new Vector2Int(5, 9);
             EnterGame(monster);
         }
