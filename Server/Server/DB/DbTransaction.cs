@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Server.DB
 {
-    public class DbTransaction : JobSerializer
+    public partial class DbTransaction : JobSerializer
     {
         public static DbTransaction Instance { get; } = new DbTransaction();
 
@@ -81,6 +81,9 @@ namespace Server.DB
                 return;
 
             // TODO : 살짝 문제가 있다.
+            // 1) DB에다가 저장 요청
+            // 2) DB 저장 OK
+            // 3) 메모리 적용
             int? emptySlot = player.Inven.GetEmptySlot();
             if (emptySlot == null)
                 return;
@@ -116,13 +119,11 @@ namespace Server.DB
                                 itemPacket.Items.Add(itemInfo);
 
                                 player.Session.Send(itemPacket);
-                            }
-                        
+                            }                        
                         });
                     }
                 }
             });
         }
-
     }
 }
