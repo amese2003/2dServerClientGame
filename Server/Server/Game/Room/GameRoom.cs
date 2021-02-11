@@ -37,11 +37,6 @@ namespace Server.Game
                 projectile.Update();
             }
 
-            foreach (Monster monster in _monster.Values)
-            {
-                monster.Update();
-            }
-
             Flush();
         }
 
@@ -57,6 +52,8 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
+
+                player.RefreshAdditionalStat();
 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
 
@@ -100,6 +97,8 @@ namespace Server.Game
                 Projectile projectile = gameObject as Projectile;
                 _Projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
+
+                projectile.Update();
             }
 
 
