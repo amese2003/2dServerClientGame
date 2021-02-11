@@ -20,6 +20,8 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateController()
     {
+        GetUIKeyInput();
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -45,8 +47,6 @@ public class MyPlayerController : PlayerController
         // 스킬 상태로 갈지..
         if (_coSkillCoolTime == null && Input.GetKey(KeyCode.Space))
         {
-            Debug.Log("Skill");
-
             C_Skill skill = new C_Skill() { Info = new SkillInfo() };
             skill.Info.SkillId = 2;
             Managers.Network.Send(skill);
@@ -60,6 +60,26 @@ public class MyPlayerController : PlayerController
     {
         yield return new WaitForSeconds(time);
         _coSkillCoolTime = null;
+    }
+
+    private void GetUIKeyInput()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Inventory invenUI = gameSceneUI.InvenUI;
+
+            if (invenUI.gameObject.activeSelf)
+            {
+                invenUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                invenUI.gameObject.SetActive(true);
+                invenUI.RefreshUI();
+            }
+
+        }
     }
 
     private void GetDirInput()

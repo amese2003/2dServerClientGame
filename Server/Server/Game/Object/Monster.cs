@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 
 namespace Server.Game
 {
@@ -206,7 +207,16 @@ namespace Server.Game
         {
             base.OnDead(attacker);
 
-            // TODO : 아이템 생성
+            GameObject owenr = attacker.GetOwner();
+            if (owenr.ObjectType == GameObjectType.Player)
+            {
+                RewardData rewardData = GetRandomReward();
+                if(rewardData != null)
+                {
+                    Player player = (Player)owenr;
+                    DbTransaction.RewardPlayer(player, rewardData, Room);
+                }
+            }
         }
 
         RewardData GetRandomReward()
@@ -219,6 +229,7 @@ namespace Server.Game
 
             // rand = 0 - 100 => 42?
             // 10 10 10 10 10
+            // 10 20 30 40 50
             int sum = 0;
             foreach(RewardData rewardData in monsterData.rewards)
             {

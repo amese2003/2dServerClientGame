@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Protobuf.Protocol;
+using Microsoft.EntityFrameworkCore;
+using Server.Data;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -71,6 +73,55 @@ namespace Server.DB
         public static void SavePlayerStatus_Step3(int hp)
         {
             Console.WriteLine($"Hp 세이브! ({hp})");
+        }
+
+        public static void RewardPlayer(Player player, RewardData rewardData, GameRoom room)
+        {
+            if (player == null || rewardData == null || room == null)
+                return;
+
+            // TODO : 살짝 문제가 있다.
+            int? emptySlot = player.Inven.GetEmptySlot();
+            if (emptySlot == null)
+                return;
+
+            ItemDb itemDb = new ItemDb()
+            {
+                TemplateId = rewardData.itemId,
+                Count = rewardData.count,
+                Slot = emptySlot.Value,
+                OwnerDbId = player.PlayerDbId
+            };
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    db.Items.Add(itemDb);
+                    bool success = db.SaveChangesEx();
+
+                    if (success)
+                    {
+                        // Me
+                        room.Push(() => 
+                        {
+                            Item newItem = Item.MakeItem(itemDb);
+                            player.Inven.Add(newItem);
+
+                            // TODO : Client Noti;
+                            {
+                                S_AddItem itemPacket = new S_AddItem();
+                                ItemInfo itemInfo = new ItemInfo();
+                                itemInfo.MergeFrom(newItem.Info);
+                                itemPacket.Items.Add(itemInfo);
+
+                                player.Session.Send(itemPacket);
+                            }
+                        
+                        });
+                    }
+                }
+            });
         }
 
     }
