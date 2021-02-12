@@ -16,28 +16,56 @@ using System.Linq;
 namespace Server
 {
     // 1. GameRoom 방식의 간단한 동기화 <- 통과
+    // 2. 더 넓은 영역 관리
+
+
+    // 1. OnRecv (N개)       서빙 
+    // 2. GameLogic (1개)    요리사
+    // 3. Send (1개)         완료서빙
+    // 3. DB (1개)           결제/장부
     class Program
     {
         static Listener _listener = new Listener();
-        static List<System.Timers.Timer> _timer = new List<System.Timers.Timer>();
-        static void TickRoom(GameRoom room, int tick = 100)
+        static void GameLogicTask()
         {
-            var timer = new System.Timers.Timer();
-            timer.Interval = tick;
-            timer.Elapsed += ((s, e) => { room.Update(); });
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
-            _timer.Add(timer);
+            while (true)
+            {
+                GameLogic.Instance.Update();
+                Thread.Sleep(0);
+            }
         }
-        
+
+        static void DbTask()
+        {
+            while (true)
+            {
+                DbTransaction.Instance.Flush();
+                Thread.Sleep(0);
+            }
+        }
+
+        static void NetworkTask()
+        {
+            while (true)
+            {
+                List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+                foreach(ClientSession session in sessions)
+                {
+                    session.FlushSend();
+                }
+
+                Thread.Sleep(0);
+            }
+        }
+
         static void Main(string[] args)
         {
             ConfigManager.LoadConfig();
             DataManager.LoadData();
 
-            GameRoom room = RoomManager.Instance.Add(1);
-            TickRoom(room, 50);
+            GameLogic.Instance.Push(() => { GameRoom room = GameLogic.Instance.Add(1); });
+
+            
 
             // DNS (Domain Name System)
             string host = Dns.GetHostName();
@@ -49,14 +77,21 @@ namespace Server
             _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
             Console.WriteLine("Listening.....");
 
-            //FlushRoom();
-            //JobTimer.Instance.Push(FlushRoom);
-
-            // TODO
-            while (true)
+            // GameLogicTask
             {
-                DbTransaction.Instance.Flush();
+                Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
+                gameLogicTask.Start();
             }
+
+            // NetworkTask
+            {
+                Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
+                networkTask.Start();
+            }
+
+
+            // DBTask
+            DbTask();
         }
     }
 }

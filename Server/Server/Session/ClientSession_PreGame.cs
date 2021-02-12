@@ -209,8 +209,11 @@ namespace Server
 
 			ServerState = PlayerServerState.ServerStateGame;
 
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.EnterGame, MyPlayer);
+			GameLogic.Instance.Push(() => 
+			{
+				GameRoom room = GameLogic.Instance.Find(1);
+				room.Push(room.EnterGame, MyPlayer);
+			});			
 		}
     }
 }
