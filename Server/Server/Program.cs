@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace Server
 {
-    
+    // 1. GameRoom 방식의 간단한 동기화 <- 통과
     class Program
     {
         static Listener _listener = new Listener();

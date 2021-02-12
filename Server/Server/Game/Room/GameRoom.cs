@@ -31,12 +31,6 @@ namespace Server.Game
         // 누군가 주기적으로 호출해줘야 하는 함수
         public void Update()
         {
-
-            foreach (Projectile projectile in _Projectiles.Values)
-            {
-                projectile.Update();
-            }
-
             Flush();
         }
 
@@ -91,6 +85,8 @@ namespace Server.Game
                 monster.Room = this;
 
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
+
+                monster.Update();
             }
             else if (type == GameObjectType.Projectile)
             {
