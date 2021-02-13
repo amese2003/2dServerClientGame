@@ -79,19 +79,22 @@ namespace Server
 
             // GameLogicTask
             {
-                Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
-                gameLogicTask.Start();
+                Thread t = new Thread(DbTask);
+                t.Name = "DB";
+                t.Start();
             }
 
             // NetworkTask
             {
-                Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
-                networkTask.Start();
+                Thread t = new Thread(NetworkTask);
+                t.Name = "Network Send";
+                t.Start();
             }
 
 
             // DBTask
-            DbTask();
+            Thread.CurrentThread.Name = "GameLogic";
+            GameLogicTask();
         }
     }
 }
