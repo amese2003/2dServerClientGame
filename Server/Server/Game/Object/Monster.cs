@@ -140,7 +140,7 @@ namespace Server.Game
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.PosInfo = PosInfo;
-            Room.Broadcast(movePacket);
+            Room.Broadcast(CellPos, movePacket);
         }
 
 
@@ -189,7 +189,7 @@ namespace Server.Game
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
-                Room.Broadcast(skillPacket);
+                Room.Broadcast(CellPos, skillPacket);
 
 
                 // 스킬 쿨
