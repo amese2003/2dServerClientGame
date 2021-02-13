@@ -17,6 +17,9 @@ public class ObjectManager
     }
     public void Add(ObjectInfo info, bool myPlayer = false)
     {
+        if (MyPlayer != null && MyPlayer.id == info.ObjectId)
+            return;
+
         GameObjectType objectType = GetObjectTypeById(info.ObjectId);
 
         if (objectType == GameObjectType.Player)
@@ -35,6 +38,7 @@ public class ObjectManager
             }
             else
             {
+
                 GameObject go = Managers.Resource.Instantiate("Creature/Player");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
@@ -74,6 +78,9 @@ public class ObjectManager
 
     public void Remove(int id)
     {
+        if (MyPlayer != null && MyPlayer.id == id)
+            return;
+
         GameObject go = FindById(id);
         if (go == null)
             return;        
