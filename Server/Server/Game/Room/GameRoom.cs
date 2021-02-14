@@ -57,7 +57,7 @@ namespace Server.Game
 
 
             // temp
-            for (int i = 0; i < 600; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 Monster monster = ObjectManager.Instance.Add<Monster>();
                 monster.Init(1);

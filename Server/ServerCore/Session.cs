@@ -14,7 +14,6 @@ namespace ServerCore
         public sealed override int OnRecv(ArraySegment<byte> buffer)
         {
             int processLeng = 0;
-            int packetCount = 0;
 
 
             while (true)
@@ -31,15 +30,11 @@ namespace ServerCore
 
                 // 패킷 조립가능!
                 OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
-                packetCount++;
                 //buffer.Slice()
 
                 processLeng += dataSize;
                 buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
             }
-
-            if(packetCount > 1)
-                Console.WriteLine($"패킷 모아보내기 : {packetCount}");
 
             return processLeng;
         }
