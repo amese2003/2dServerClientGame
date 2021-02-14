@@ -12,7 +12,7 @@ namespace DummyClient
     
     class Program
     {
-        static int DummyClientCount { get; } = 500;
+        static int DummyClientCount { get; } = 300;
         static void Main(string[] args)
         {
             Thread.Sleep(4000);
