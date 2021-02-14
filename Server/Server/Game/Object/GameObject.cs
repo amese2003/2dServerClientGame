@@ -149,10 +149,7 @@ namespace Server.Game
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
 
-            PosInfo.PosX = 0;
-            PosInfo.PosY = 0;
-
-            room.EnterGame(this);
+            room.EnterGame(this, randomPos: true);
         }
 
         public virtual GameObject GetOwner()
