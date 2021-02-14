@@ -54,12 +54,15 @@ namespace Server.Game
                     Zones[y, x] = new Zone(y, x);
                 }
             }
-            
+
 
             // temp
-            Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Init(1);
-            EnterGame(monster, randomPos: true);
+            for (int i = 0; i < 600; i++)
+            {
+                Monster monster = ObjectManager.Instance.Add<Monster>();
+                monster.Init(1);
+                EnterGame(monster, randomPos: true);
+            }
         }
 
         // 누군가 주기적으로 호출해줘야 하는 함수

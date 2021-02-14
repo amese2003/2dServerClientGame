@@ -20,7 +20,32 @@ namespace Server
         public int SessionID { get; set; }
 
         List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
-        object _lock = new object();      
+        object _lock = new object();
+
+        long _pingpongTick = 0;
+        public void Ping()
+        {
+            if(_pingpongTick > 0)
+            {
+                long delta = (System.Environment.TickCount64 - _pingpongTick);
+                if(delta > 30 * 1000)
+                {
+                    Console.WriteLine("Disconnect by PingCheck");
+                    Disconnect();
+                    return;
+                }
+            }
+
+            S_Ping pingPacket = new S_Ping();
+            Send(pingPacket);
+
+            GameLogic.Instance.PushAfter(5000, Ping);
+        }
+
+        public void HandlePong()
+        {
+            _pingpongTick = System.Environment.TickCount64;
+        }
 
         #region Network
         // 예약만 하되 보내지는 않는다.
@@ -66,7 +91,7 @@ namespace Server
                 Send(connectedPacket);
             }
 
-            
+            GameLogic.Instance.PushAfter(5000, Ping);
         }
 
         public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -78,6 +103,9 @@ namespace Server
         {
             GameLogic.Instance.Push(() =>
             {
+                if (MyPlayer == null)
+                    return;
+
                 GameRoom room = GameLogic.Instance.Find(1);
                 room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
             });
