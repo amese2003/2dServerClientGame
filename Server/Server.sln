@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tool", "Tool", "{B30627E5-D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyClient", "DummyClient\DummyClient.csproj", "{821B8688-5F5F-41C7-82FA-47C03A4DDA9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountServer", "AccountServer\AccountServer.csproj", "{50300620-7CB5-4DD3-8FB5-1CECFD6B9BAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{821B8688-5F5F-41C7-82FA-47C03A4DDA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{821B8688-5F5F-41C7-82FA-47C03A4DDA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{821B8688-5F5F-41C7-82FA-47C03A4DDA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50300620-7CB5-4DD3-8FB5-1CECFD6B9BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50300620-7CB5-4DD3-8FB5-1CECFD6B9BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50300620-7CB5-4DD3-8FB5-1CECFD6B9BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50300620-7CB5-4DD3-8FB5-1CECFD6B9BAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
