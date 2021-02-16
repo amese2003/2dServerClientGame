@@ -11,6 +11,8 @@ namespace DummyClient.Session
         object _lock = new object();
         int _dummyId = 1;
 
+        
+
         public ServerSession Generate()
         {
             lock (_lock)
