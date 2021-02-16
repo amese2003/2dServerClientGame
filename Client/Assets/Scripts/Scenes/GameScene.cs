@@ -11,6 +11,11 @@ public class GameScene : BaseScene
         base.Init();
 
         SceneType = Define.Scene.Game;
+
+        // TODO : 잠시 기생중
+        Managers.Web.BaseUrl = "https://localhost:5001/api";
+        WebPacket.SendCreateAccount("Nero", "1234");
+
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
